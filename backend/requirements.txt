@@ -1,0 +1,16 @@
+ipdb
+ipykernel
+yapf
+google-cloud-bigquery
+google-cloud-storage
+google-cloud-texttospeech
+
+# API
+fastapi
+pytz
+uvicorn
+python-multipart
+pydantic
+# tests
+httpx
+pytest-asyncio
