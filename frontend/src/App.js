@@ -2,12 +2,22 @@ import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
+import axios from "axios";
 
 export default function App() {
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+    const [originalLanguage, setOriginalLanguage] = useState('english');
+    const [toTranslateLanguage, setToTranslateLanguage] = useState('bengali');
 
+    const handleOriginalLanguageChange = (event) => {
+        setOriginalLanguage(event.target.value);
+    };
+
+    const handleToTranslateLanguageChange = (event) => {
+        setToTranslateLanguage(event.target.value);
+    };
     const handleToggleRecording = async () => {
         try {
             if (!isRecording) {
@@ -16,19 +26,14 @@ export default function App() {
                 mediaRecorderRef.current.ondataavailable = (event) => {
                     audioChunksRef.current.push(event.data);
                 };
-                mediaRecorderRef.current.onstop = () => {
+                mediaRecorderRef.current.onstop = async () => {
                     const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
 
-                    const audioUrl = URL.createObjectURL(audioBlob);
-
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = audioUrl;
-                    downloadLink.download = 'recorded_audio.wav';
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-
-                    document.body.removeChild(downloadLink);
-                    URL.revokeObjectURL(audioUrl);
+                    try {
+                        await callAPI(originalLanguage, toTranslateLanguage, audioBlob);
+                    } catch (error) {
+                        console.error('Error calling API:', error);
+                    }
                     audioChunksRef.current = [];
                 };
 
@@ -43,6 +48,23 @@ export default function App() {
         }
     };
 
+    async function callAPI(originalLanguage, toTranslateLanguage, audioFile) {
+        const formData = new FormData();
+        formData.append('audio_file', audioFile);
+
+        const queryParams = new URLSearchParams();
+        queryParams.append('original_language', originalLanguage);
+        queryParams.append('to_translate_language', toTranslateLanguage);
+
+        const response = await axios.post(`http://localhost:8000/predict?${queryParams.toString()}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        console.log(response)
+    }
+
 
     return (
         <>
@@ -52,23 +74,35 @@ export default function App() {
                 <p>A tool that converts a bengali / english speech to an english / bengali speech in real time</p>
 
                 <div className="main-contents">
-                    <select id="selector1" className="mb-6 ml-32">
-                        <option value="english-option1">English</option>
-                        <option value="english-option2">Bengali</option>
+                    <select
+                        id="selector1"
+                        className="mb-6 ml-32"
+                        onChange={handleOriginalLanguageChange}
+                        value={originalLanguage}
+                    >
+                        <option value="english">English</option>
+                        <option value="bengali">Bengali</option>
                     </select>
 
-                    <select id="selector2" className="mb-6 mr-32">
-                        <option value="bengali-option1">English</option>
-                        <option value="bengali-option2">Bengali</option>
-
+                    <select
+                        id="selector2"
+                        className="mb-6 mr-32"
+                        onChange={handleToTranslateLanguageChange}
+                        value={toTranslateLanguage}
+                    >
+                        <option value="english">English</option>
+                        <option value="bengali">Bengali</option>
                     </select>
-
                 </div>
+
                 <div className="main-contents">
                     <textarea disabled className="main-content">
                     </textarea>
                     <div className="m-10 cursor-pointer" onClick={handleToggleRecording}>
-                        <FontAwesomeIcon icon={faMicrophone} className="text-blue-500 text-4xl" />
+                        <FontAwesomeIcon
+                            icon={faMicrophone}
+                            className={`text-${isRecording ? 'red' : 'blue'}-500 text-4xl`}
+                        />
                     </div>
                     <textarea disabled className="main-content">
                     </textarea>
