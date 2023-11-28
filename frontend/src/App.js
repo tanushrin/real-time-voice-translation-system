@@ -10,10 +10,12 @@ export default function App() {
     const audioChunksRef = useRef([]);
     const [originalLanguage, setOriginalLanguage] = useState('english');
     const [toTranslateLanguage, setToTranslateLanguage] = useState('bengali');
+    const audioRef = useRef(null);
 
     const handleOriginalLanguageChange = (event) => {
         setOriginalLanguage(event.target.value);
     };
+
 
     const handleToTranslateLanguageChange = (event) => {
         setToTranslateLanguage(event.target.value);
@@ -56,18 +58,20 @@ export default function App() {
         queryParams.append('original_language', originalLanguage);
         queryParams.append('to_translate_language', toTranslateLanguage);
 
-        const response = await axios.post(`http://localhost:8000/predict?${queryParams.toString()}`, formData, {
+        await axios.post(`http://localhost:8000/predict?${queryParams.toString()}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
-
-        console.log(response)
     }
 
 
     return (
         <>
+            <div className="hidden">
+                <audio ref={audioRef} autoPlay controls>.
+                </audio>
+            </div>
             <div className="container">
                 <h2>Speech to Speech Converter</h2>
                 <br/>
