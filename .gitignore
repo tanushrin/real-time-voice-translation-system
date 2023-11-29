@@ -1,1 +1,5 @@
 backend/raw_data/
+backend/VoiceTranslationAPI.egg-info
+temp
+/backend/utils/logs/train
+/backend/utils/logs/validation

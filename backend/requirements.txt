@@ -4,6 +4,16 @@ yapf
 google-cloud-bigquery
 google-cloud-storage
 google-cloud-texttospeech
+pandas
+numpy
+librosa
+tqdm
+tensorflow
+scikit-learn
+tqdm
+datasets
+torch
+jupyter
 
 # API
 fastapi
