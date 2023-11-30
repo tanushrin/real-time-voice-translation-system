@@ -90,3 +90,5 @@ def create_model(vector_length=128):
 
 def load_pre_trained_model():
     return load_model('../model/pre_trained_model.h5')
+
+load_data()

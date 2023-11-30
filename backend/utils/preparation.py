@@ -7,21 +7,33 @@ import librosa
 from tqdm import tqdm
 
 
-def extract_feature(file_name, mel = True):
+def extract_feature(file_name):
     """
     Extract feature from audio file `file_name`
+        Features supported:
+            - MFCC (mfcc)
+            - Chroma (chroma)
             - MEL Spectrogram Frequency (mel)
+            - Contrast (contrast)
+            - Tonnetz (tonnetz)
         e.g:
-        `features = extract_feature(path, mel=True)`
+        `features = extract_feature(path, mel=True, mfcc=True)`
     """
 
 
-    y, sample_rate = librosa.load(audio_file)
+    X, sample_rate = librosa.core.load(file_name)
 
-    if mel:
-        mel = librosa.feature.melspectrogram(y=y, sr=sample_rate)
-        mel_mean = np.mean(mel.T, axis=0)
-        return mel_mean
+    result = np.array([])
+
+    mel = librosa.feature.melspectrogram(y=X, sr=sample_rate)
+    mel_mean = np.mean(mel.T, axis=0)
+    result = np.hstack((result, mel_mean))
+
+    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
+    result = np.hstack((result, mfccs))
+
+
+    return result
 
 dirname = "../raw_data"
 
@@ -55,7 +67,7 @@ for i, audio_file in tqdm(list(enumerate(audio_files)), f"Extracting features of
         #create that folder if it doesn't exist
         if not os.path.isdir(os.path.dirname(target_path)):
             os.mkdir(os.path.dirname(target_path))
-        features = extract_feature(src_path, mel=True)
+        features = extract_feature(src_path)
         target_filename = audio_filename.split(".")[0]
         np.save(f"{target_path}/{target_filename}", features)
         # shutil.copyfile(src_path, target_path)
