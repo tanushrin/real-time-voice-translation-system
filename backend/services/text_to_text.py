@@ -1,6 +1,6 @@
 import requests
 
-def tts(text: str, original_language_simplified_code: str, to_translate_language_simplified_code: str):
+def text_to_text(text: str, original_language_simplified_code: str, to_translate_language_simplified_code: str):
     translation_url = f'https://api.mymemory.translated.net/get?q={text}&langpair={original_language_simplified_code}|{to_translate_language_simplified_code}&de=tanushri0310003@gmail.com'
 
     response = requests.get(translation_url)
