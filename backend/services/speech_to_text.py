@@ -1,12 +1,12 @@
 from google.cloud import speech
 
-def speech_to_text(audio_content: bytes) -> str:
+def speech_to_text(audio_content: bytes, original_language) -> str:
     client = speech.SpeechClient()
 
     audio = speech.RecognitionAudio(content=audio_content)
 
     config = speech.RecognitionConfig(
-        language_code="en",
+        language_code=original_language.split("_")[0],
         enable_automatic_punctuation=True
     )
 

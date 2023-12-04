@@ -4,14 +4,8 @@ yapf
 google-cloud-texttospeech
 google-cloud-speech
 google-cloud-translate
-
-torchaudio
-torch
-tqdm
-transformers
-typing
 pydub
-soundfile
+tensorflow
 
 # API
 fastapi
