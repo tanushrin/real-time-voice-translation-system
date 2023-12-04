@@ -1,7 +1,10 @@
+import io
+
 from google.cloud import texttospeech
 from starlette.responses import StreamingResponse
 
-async def tts(text: str, language_code: str, gender: str):
+
+async def text_to_speech(text: str, language_code: str, gender: str):
     client = texttospeech.TextToSpeechClient()
 
     synthesis_input = texttospeech.SynthesisInput(text=text)
@@ -25,4 +28,4 @@ async def tts(text: str, language_code: str, gender: str):
 
     audio_content = response.audio_content
 
-    return StreamingResponse(io.BytesIO(audio_content), media_type="audio/mpeg")
+    return audio_content

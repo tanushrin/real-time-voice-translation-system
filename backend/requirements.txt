@@ -1,14 +1,21 @@
 ipdb
 ipykernel
 yapf
-google-cloud-bigquery
-google-cloud-storage
 google-cloud-texttospeech
+google-cloud-speech
+google-cloud-translate
+
+torchaudio
+torch
+tqdm
+transformers
+typing
+pydub
+soundfile
 
 # API
 fastapi
 pytz
-uvicorn
 python-multipart
 pydantic
 # tests
