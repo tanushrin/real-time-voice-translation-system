@@ -1,6 +1,7 @@
 # BhashsaBridge (a Real-Time Audio Translator)
 ## Project Description
-BhashaBridge is a cutting-edge solution designed to translate audio in real time while preserving the gender identity of the speaker. This innovative tool is essential in today’s globalized world, ensuring effective communication across different languages without losing the essence of the speaker’s identity.
+Bhasha means 'Language' in Bengali. This project is to translate Bengali to English and English to Bengali in real-time.
+BhashaBridge provides a cutting-edge solution designed to translate audio in real time while preserving the gender identity of the speaker. This innovative tool is essential in today’s globalized world, ensuring effective communication across different languages without losing the essence of the speaker’s identity.
 ## Features
 - **Real-Time Translation**: Instant translation of audio across multiple languages.
 - **Gender Identity Preservation**: Maintains the gender characteristics of the speaker’s voice during translation.
