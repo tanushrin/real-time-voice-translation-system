@@ -121,9 +121,9 @@ export default function App() {
                 </audio>
             </div>
             <div className="container">
-                <h2 className="green">Speech to Speech Converter</h2>
+                <h2 className="green">BhashaBridge</h2>
                 <br/>
-                <p>A tool that converts a bengali / english speech to an english / bengali speech in real time</p>
+                <p>A tool that converts a English to Bengali or Bengali to English in real time</p>
                 <div className="main-contents">
                     <select
                         id="selector1"

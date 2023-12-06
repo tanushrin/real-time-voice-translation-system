@@ -3,26 +3,20 @@ import os
 import torch
 import base64
 
-import soundfile as sf
 import numpy as np
 
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import Response
-from services import speech_to_text, text_to_text, text_to_speech, gender
+from services import speech_to_text, text_to_text, text_to_speech
 from pydub import AudioSegment
-
-gender_model_name_or_path = "alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech"
+from tensorflow.keras.models import load_model
+from utils.preparation import extract_feature
 
 language_codes = {
     'english': 'en-UK',
     'bengali': 'bn-BN'
-}
-
-genders = {
-    0: "male",
-    1: "female"
 }
 
 error_messages  = {
@@ -31,7 +25,7 @@ error_messages  = {
 }
 
 app = FastAPI()
-app.state.model = gender.load_model(gender_model_name_or_path)
+app.state.model = load_model('./model/model.h5')
 # # Allow all requests (optional, good for development purposes)
 app.add_middleware(
     CORSMiddleware,
@@ -48,7 +42,7 @@ async def predict(original_language: str = None, to_translate_language: str = No
     original_language = language_codes.get(original_language)
     to_translate_language = language_codes.get(to_translate_language)
 
-    first_step = speech_to_text.speech_to_text(audio_content)
+    first_step = speech_to_text.speech_to_text(audio_content, original_language)
 
     if first_step == "":
         return await return_error_message(original_language)
@@ -85,18 +79,11 @@ async def parse_audio(audio_file: UploadFile = File(...)):
     return audio_content
 
 async def get_gender_prediction():
-    folder_path = "/home/felipe/code/tanushrin/real-time-voice-translation-system/backend"
-    audio_paths = []
-    for file_name in os.listdir(folder_path):
-        if file_name.endswith(".wav"):
-            file_path = os.path.join(folder_path, file_name)
-            audio_paths.append(file_path)
-
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    pred = await gender.get_gender(app.state.model, gender_model_name_or_path, audio_paths, device)
-    return pred
+    features = extract_feature("input.wav").reshape(1, -1)
+    male_prob = app.state.model.predict(features)[0][0]
+    female_prob = 1 - male_prob
+    gender = "male" if male_prob > female_prob else "female"
+    return gender
 
 async def return_error_message(original_language):
     print(error_messages[original_language], original_language)
