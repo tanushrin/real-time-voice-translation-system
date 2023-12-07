@@ -123,7 +123,7 @@ export default function App() {
             <div className="container">
                 <h2 className="green">BhashaBridge</h2>
                 <br/>
-                <p>A tool that converts a English to Bengali or Bengali to English in real time</p>
+                <p>A tool that translates English to Bengali or Bengali to English in real time</p>
                 <div className="main-contents">
                     <select
                         id="selector1"
